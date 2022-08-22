@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.example.tbc_course_22.R
 import com.example.tbc_course_22.databinding.FragmentHomeBinding
 import com.example.tbc_course_22.databinding.FragmentRegisterBinding
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.logOut.setOnClickListener {
-            Navigation.findNavController(it).popBackStack()
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMainFragment())
         }
 
 
