@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -60,6 +63,10 @@ class RegisterFragment : Fragment() {
                                 Snackbar.LENGTH_SHORT
                             ).show()
                             findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToMainFragment())
+                            val result = binding.emailEditText.text.toString()
+                            val passResult = binding.passwordEditText.text.toString()
+                            setFragmentResult("requestKey", bundleOf("bundleKey" to result))
+                            setFragmentResult("requestKeyPass", bundleOf("bundleKeyPass" to passResult))
                         }
                     }
                 }

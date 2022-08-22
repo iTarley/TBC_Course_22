@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,8 +32,25 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener("requestKey"){key,bundle ->
+            val result = bundle.getString("bundleKey")
+            Log.d("result", "onCreate: $result")
+            binding.emailEditText.setText(result)
+        }
+        setFragmentResultListener("requestKeyPass"){key,bundle ->
+            val resultPass = bundle.getString("bundleKeyPass")
+            Log.d("result1", "onCreate: $resultPass")
+            binding.passwordEditText.setText(resultPass)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
 
         binding.registerBtn.setOnClickListener {
