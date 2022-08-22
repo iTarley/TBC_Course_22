@@ -3,6 +3,7 @@ package com.example.tbc_course_22.ui.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tbc_course_22.extensions.DataStore
 import com.example.tbc_course_22.extensions.Resource
 import com.example.tbc_course_22.models.login.Login
 import com.example.tbc_course_22.models.login.LoginModel
@@ -33,6 +34,7 @@ class MainViewModel : ViewModel() {
                 val body = response.body()
 
                 Log.d("response", "login: ${body?.token}")
+                body?.token?.let { DataStore.writeTo(it) }
                 emit(Resource.Success(body!!))
             }
             else{

@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.tbc_course_22.R
 import com.example.tbc_course_22.databinding.FragmentMainBinding
+import com.example.tbc_course_22.extensions.DataStore
 import com.example.tbc_course_22.extensions.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -66,7 +67,6 @@ class MainFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 viewModel.loginState.collect {
                     when (it) {
                         is Resource.Error -> {
