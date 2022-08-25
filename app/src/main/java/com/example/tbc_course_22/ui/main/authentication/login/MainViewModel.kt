@@ -1,5 +1,6 @@
 package com.example.tbc_course_22.ui.main
 
+import android.app.Application
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,13 @@ class MainViewModel : ViewModel() {
     val loginState = _loginState.asStateFlow()
 
 
+    suspend fun save(key: String, value: String) {
+        com.example.tbc_course_22.extensions.DataStore.save(key, value)
+    }
+
+    fun getPreferences() = com.example.tbc_course_22.extensions.DataStore.getPreferences()
+
+
     fun logIn(email: String,password: String) {
         viewModelScope.launch {
             loginResponse(email = email, password = password).collect{
@@ -32,7 +40,6 @@ class MainViewModel : ViewModel() {
             val response = RetrofitClient.getInformation().getLogin(LoginModel(email = email,password = password))
             if(response.isSuccessful){
                 val body = response.body()
-
                 Log.d("response", "login: ${body?.token}")
                 emit(Resource.Success(body!!))
             }
@@ -46,7 +53,5 @@ class MainViewModel : ViewModel() {
         }catch (e:Throwable){
             emit(Resource.Error(e.toString()))
         }
-
-
     }
 }

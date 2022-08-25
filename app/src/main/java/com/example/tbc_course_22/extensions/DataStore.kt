@@ -1,33 +1,52 @@
 package com.example.tbc_course_22.extensions
 
 import android.app.Application
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
-class DataStore(private val application: Application) {
 
-    companion object{
-        private val Application.store by preferencesDataStore(
-            name = "settings",
-        )
+object DataStore {
 
+    private val Application.store by preferencesDataStore(
+        name = "test"
+    )
 
+    fun getPreferences(): Flow<Preferences> {
+        return App.appContext.store.data
     }
 
-    suspend fun saveState(key: String, value: String) {
-        val prefKey = stringPreferencesKey(key)
-        application.store.edit {
-            it[prefKey] = value
-            it[prefKey] = value
+    suspend fun save(key: String, value: String) {
+        App.appContext.store.edit {
+            it[stringPreferencesKey(key)] = value
+        }
+    }
+
+    suspend fun clear() {
+        App.appContext.store.edit {
+            it.clear()
         }
     }
 
 
-        //flow
-    suspend fun checkState(key: String): String? {
-        val text =  application.store.data.first()
-        return text[stringPreferencesKey(key)]
+}
+
+class App: Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        appContext = this
+
     }
+
+    companion object {
+
+        lateinit var appContext: Application
+
+    }
+
 }
