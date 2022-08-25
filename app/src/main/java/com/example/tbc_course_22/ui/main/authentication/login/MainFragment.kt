@@ -16,8 +16,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.tbc_course_22.R
 import com.example.tbc_course_22.databinding.FragmentMainBinding
+import com.example.tbc_course_22.extensions.DataStore
 import com.example.tbc_course_22.extensions.Resource
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
@@ -54,13 +56,21 @@ class MainFragment : Fragment() {
 
 
 
-
+        //invoke on completition
         binding.registerBtn.setOnClickListener {
             findNavController().navigate(MainFragmentDirections.actionMainFragmentToRegisterFragment())
         }
 
         binding.loginBtn.setOnClickListener {
-            login()
+            viewLifecycleOwner.lifecycleScope.launch {
+                DataStore(requireActivity().application).also {state ->
+                    state.saveState("KEYTEST","Asdasd")
+                    state.saveState("KEYTEST1",binding.emailEditText.text.toString())
+
+                }
+            }.invokeOnCompletion {
+                checkState()
+            }
         }
 
 
@@ -80,9 +90,11 @@ class MainFragment : Fragment() {
                                 getString(R.string.welcome) + binding.emailEditText.text.toString(),
                                 Snackbar.LENGTH_SHORT
                             ).show()
-                            findNavController().navigate(MainFragmentDirections.actionMainFragmentToHomeFragment())
                             val result = binding.emailEditText.text.toString()
                             setFragmentResult("requestString", bundleOf("bundleKeyString" to result))
+
+
+
                         }
                     }
                 }
@@ -101,6 +113,21 @@ class MainFragment : Fragment() {
         } else {
             Snackbar.make(requireView(), getString(R.string.fill_all), Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+
+    private fun checkState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val reader = DataStore(requireActivity().application)
+            reader.checkState("KEYTEST")?.let {
+                Log.d("state", "checkState: $it")
+                if (it.isNotEmpty())
+                    findNavController().navigate(MainFragmentDirections.actionMainFragmentToHomeFragment(reader.checkState("KEYTEST1")!!))
+            }
+
+
+        }
+
     }
 
 
